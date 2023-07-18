@@ -3,48 +3,45 @@ info:
   title: Sample API
   version: 1.0.0
   description: This is a sample API documentation using Swagger 3.0.2.
-
+servers:
+  - url: https://api.example.com/v1
 paths:
-  /hello:
+  /users:
     get:
-      summary: Get a simple greeting message
+      summary: Get a list of users
+      operationId: getUsers
       responses:
         '200':
-          description: A successful response with a greeting message
+          description: A list of users retrieved successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-
-  /users:
-    post:
-      summary: Create a new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    email:
+                      type: string
+      security:
+        - apiKey: []
+  /users/{id}:
+    get:
+      summary: Get a user by ID
+      operationId: getUserById
+      parameters:
+        - name: id
+          in: path
+          description: ID of the user to retrieve
+          required: true
+          schema:
+            type: integer
       responses:
-        '201':
-          description: User created successfully
+        '200':
+          description: User details retrieved successfully
           content:
             application/json:
               schema:
@@ -56,12 +53,11 @@ paths:
                     type: string
                   email:
                     type: string
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
+      security:
+        - apiKey: []
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
